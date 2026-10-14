@@ -1,0 +1,8 @@
+{
+	"docs": "Core data structures and operations\n\nHaskell's base library provides, among other things, core types (e.g.\n<a>Bool</a> and <a>Int</a>), data structures (e.g. <a>List</a>,\n<a>Tuple</a> and <a>Maybe</a>), the <a>Exception</a> mechanism, and\nthe <a>IO</a> &amp; <a>Concurrency</a> operations. The <a>Prelude</a>\nmodule, which is imported by default, exposes a curated set of types\nand functions from other modules.\n\nOther data structures like <a>Map</a>, <a>Set</a> are available in the\n<a>containers</a> library. To work with textual data, use the\n<a>text</a> library.\n",
+	"item": "package base",
+	"module": {},
+	"package": {},
+	"type": "package",
+	"url": "https://hackage.haskell.org/package/base"
+}

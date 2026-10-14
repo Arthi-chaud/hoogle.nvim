@@ -42,7 +42,7 @@
 --- @return string
 local function remove_prefix(s, prefix)
 	if s:sub(0, prefix:len()) == prefix then
-		return s:sub(prefix:len())
+		return s:sub(prefix:len() + 1)
 	end
 	return s
 end

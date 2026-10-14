@@ -1,0 +1,14 @@
+{
+	"docs": "<a>fmap</a> is used to apply a function of type <tt>(a -&gt; b)</tt>\nto a value of type <tt>f a</tt>, where f is a functor, to produce a\nvalue of type <tt>f b</tt>. Note that for any type constructor with\nmore than one parameter (e.g., <tt>Either</tt>), only the last type\nparameter can be modified with <a>fmap</a> (e.g., <tt>b</tt> in\n<tt>Either a b</tt>).\n\nSome type constructors with two parameters or more have a\n<tt><a>Bifunctor</a></tt> instance that allows both the last and the\npenultimate parameters to be mapped over.\n\n<h4><b>Examples</b></h4>\n\nConvert from a <tt><a>Maybe</a> Int</tt> to a <tt>Maybe String</tt>\nusing <a>show</a>:\n\n<pre>\n&gt;&gt;&gt; fmap show Nothing\nNothing\n\n&gt;&gt;&gt; fmap show (Just 3)\nJust \"3\"\n</pre>\n\nConvert from an <tt><a>Either</a> Int Int</tt> to an <tt>Either Int\nString</tt> using <a>show</a>:\n\n<pre>\n&gt;&gt;&gt; fmap show (Left 17)\nLeft 17\n\n&gt;&gt;&gt; fmap show (Right 17)\nRight \"17\"\n</pre>\n\nDouble each element of a list:\n\n<pre>\n&gt;&gt;&gt; fmap (*2) [1,2,3]\n[2,4,6]\n</pre>\n\nApply <a>even</a> to the second element of a pair:\n\n<pre>\n&gt;&gt;&gt; fmap even (2,2)\n(2,True)\n</pre>\n\nIt may seem surprising that the function is only applied to the last\nelement of the tuple compared to the list example above which applies\nit to every element in the list. To understand, remember that tuples\nare type constructors with multiple type parameters: a tuple of 3\nelements <tt>(a,b,c)</tt> can also be written <tt>(,,) a b c</tt> and\nits <tt>Functor</tt> instance is defined for <tt>Functor ((,,) a\nb)</tt> (i.e., only the third parameter is free to be mapped over with\n<tt>fmap</tt>).\n\nIt explains why <tt>fmap</tt> can be used with tuples containing\nvalues of different types as in the following example:\n\n<pre>\n&gt;&gt;&gt; fmap even (\"hello\", 1.0, 4)\n(\"hello\",1.0,True)\n</pre>\n",
+	"item": "fmap :: Functor f => (a -> b) -> f a -> f b",
+	"module": {
+		"name": "Prelude",
+		"url": "https://hackage.haskell.org/package/base/docs/Prelude.html"
+	},
+	"package": {
+		"name": "base",
+		"url": "https://hackage.haskell.org/package/base"
+	},
+	"type": "",
+	"url": "https://hackage.haskell.org/package/base/docs/Prelude.html#v:fmap"
+}

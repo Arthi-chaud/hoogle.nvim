@@ -1,0 +1,11 @@
+{
+	"docs": "The Prelude: a standard module. The Prelude is imported by default\ninto all Haskell modules unless either there is an explicit import\nstatement for it, or the NoImplicitPrelude extension is enabled.\n",
+	"item": "module Prelude",
+	"module": {},
+	"package": {
+		"name": "base",
+		"url": "https://hackage.haskell.org/package/base"
+	},
+	"type": "module",
+	"url": "https://hackage.haskell.org/package/base/docs/Prelude.html"
+}
