@@ -25,4 +25,12 @@ function M.get_cmd(opts, query)
 	return cmd, args
 end
 
+---@param out string raw output
+---@return snoogle.hoogle.SearchItem[] | nil
+function M.parse_output(out)
+	if out == "No results found" then
+		return {}
+	end
+	return vim.json.decode(out)
+end
 return M
