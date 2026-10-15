@@ -2,7 +2,7 @@ local M = {}
 
 ---@class snoogle.cmdOpts
 ---@field use_stack? boolean
----@field count? integer
+---@field count integer
 
 --- @param opts snoogle.cmdOpts
 --- @param query string
@@ -17,7 +17,7 @@ function M.get_cmd(opts, query)
 
 	table.insert(args, query)
 
-	table.insert(args, "--json")
+	table.insert(args, "--jsonl")
 
 	table.insert(args, "--count")
 	table.insert(args, tostring(opts.count))
@@ -26,11 +26,16 @@ function M.get_cmd(opts, query)
 end
 
 ---@param out string raw output
----@return snoogle.hoogle.SearchItem[] | nil
-function M.parse_output(out)
+---@return snoogle.hoogle.SearchItem | nil
+function M.parse_output_line(out)
 	if out == "No results found" then
-		return {}
+		return nil
 	end
-	return vim.json.decode(out)
+	local success, res = pcall(vim.json.decode, out)
+	if success then
+		return res
+	else
+		return nil
+	end
 end
 return M
