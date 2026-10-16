@@ -8,6 +8,35 @@ _[Snacks.nvim](https://github.com/folke/snacks.nvim)_ + _[Hoogle](https://github
 
 https://github.com/user-attachments/assets/cf590b15-9708-406a-a335-3cb205227a62
 
+## Setup
+
+
+```diff
++  {
++ 	 "Arthi-chaud/snoogle.nvim",
++  	 opts = {},
++  },
+{
+  "folke/snacks.nvim",
++      // Optional, for nice rendering of docs
++      dependencies = {
++        	"meanderingprogrammer/render-markdown.nvim",
++      },
+   ...
+  keys = {
++   {
++     "<leader>hs",
++     function()
++       Snacks.picker.hoogle()
++     end,
++     desc = "Hoogle",
++   }
+  }
+}
+```
+
+
+
 ## Acknowledgement
 
 - [ndmitchell/hoogle](https://github.com/ndmitchell/hoogle)
