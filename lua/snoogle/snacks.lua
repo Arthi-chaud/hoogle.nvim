@@ -33,15 +33,9 @@ local function finder(opts, ctx)
 				if entry == nil then
 					return nil
 				end
-
-				if entry.symbol ~= nil then
-					item.line = entry.symbol.name
-					item.preview = { text = entry.htmlDoc, ft = "html" }
-				elseif entry.pkg ~= nil then
-					item.line = entry.pkg.name
-				elseif entry.module ~= nil then
-					item.line = entry.module.name
-				end
+				item.line = require("snoogle.ui").formatItem(entry).text
+				item.preview = { text = entry.htmlDoc, ft = "markdown", loc = false }
+				-- TODO: set file name without it showing in the picker
 
 				return item
 			end,
@@ -57,6 +51,7 @@ M.source = {
 	layout = { cycle = true },
 	finder = finder,
 	live = true,
+	preview = "preview",
 	show_delay = 500,
 	show_empty = true,
 }
