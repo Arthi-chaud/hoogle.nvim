@@ -19,12 +19,15 @@ local function finder(opts, ctx)
 	}, ctx.filter.search)
 
 	return require("snacks.picker.source.proc").proc(
+
 		ctx:opts({
 			notify = true,
 			cmd = cmd,
 			args = args,
+
 			--- @type snacks.picker.transform
 			transform = function(item)
+				local ui = require("snoogle.ui")
 				local parsed = require("snoogle.core.cmd").parse_output_line(item.text)
 				if parsed == nil then
 					return nil
@@ -33,8 +36,12 @@ local function finder(opts, ctx)
 				if entry == nil then
 					return nil
 				end
-				item.line = require("snoogle.ui").formatItem(entry).text
-				item.preview = { text = entry.htmlDoc, ft = "markdown", loc = false }
+				item.line = ui.formatItemLine(entry)
+				item.preview = {
+					text = ui.formatItemPreview(entry),
+					ft = "markdown",
+				}
+
 				-- TODO: set file name without it showing in the picker
 
 				return item
