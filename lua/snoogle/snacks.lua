@@ -36,13 +36,12 @@ local function finder(opts, ctx)
 				if entry == nil then
 					return false
 				end
+				item.data = entry
 				item.line = ui.formatItemLine(entry)
 				item.preview = {
 					text = ui.formatItemPreview(entry),
 					ft = "markdown",
 				}
-
-				-- TODO: set file name without it showing in the picker
 
 				return item
 			end,
@@ -61,6 +60,24 @@ M.source = {
 	preview = "preview",
 	show_delay = 500,
 	show_empty = true,
+	actions = {
+		open_browser = function(_, item, _)
+			local data = item.data
+			--- @cast data snoogle.SearchItem
+			local actions = require("snoogle.actions")
+			local models = require("snoogle.core.model")
+			actions.open_browser(models.get_url(data))
+		end,
+		copy_to_clipboard = function(self, item, _)
+			local data = item.data
+			--- @cast data snoogle.SearchItem
+			local actions = require("snoogle.actions")
+			local models = require("snoogle.core.model")
+			Snacks.notify.info("Copied to clipboard!")
+			self:close()
+			actions.copy_to_clipboard(models.get_name(data))
+		end,
+	},
 }
 
 return M

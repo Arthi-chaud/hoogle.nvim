@@ -18,7 +18,7 @@ https://github.com/user-attachments/assets/cf590b15-9708-406a-a335-3cb205227a62
 +  },
 {
   "folke/snacks.nvim",
-+      // Optional, for nice rendering of docs
++      -- Optional, for nice rendering of docs
 +      dependencies = {
 +        	"meanderingprogrammer/render-markdown.nvim",
 +      },
@@ -35,6 +35,22 @@ https://github.com/user-attachments/assets/cf590b15-9708-406a-a335-3cb205227a62
 }
 ```
 
+### Actions
+
+2 actions are available: `copy_to_clipboad` & `open_browser`. For enable them, invoke `Snacks.picker.hoogle()` like this:
+
+```lua
+Snacks.picker.hoogle({
+    win = {
+        input = {
+            keys = {
+                ["<c-b>"] = { "open_browser", mode = { "i", "n" } },
+                ["<enter>"] = { "copy_to_clipboard", mode = { "i", "n" } },
+            },
+        },
+    },
+})
+```
 
 
 ## Acknowledgement

@@ -100,4 +100,28 @@ function M.from_hoogle(item)
 	return result
 end
 
+--- @param item snoogle.SearchItem
+--- @return string
+function M.get_url(item)
+	if item.module ~= nil then
+		return item.module.url
+	elseif item.pkg ~= nil then
+		return item.pkg.url
+	elseif item.symbol ~= nil then
+		return item.symbol.url
+	end
+end
+
+--- @param item snoogle.SearchItem
+--- @return string
+function M.get_name(item)
+	if item.module ~= nil then
+		return item.module.name
+	elseif item.pkg ~= nil then
+		return item.pkg.name
+	elseif item.symbol ~= nil then
+		return item.symbol.name
+	end
+end
+
 return M
