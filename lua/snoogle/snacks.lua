@@ -30,11 +30,11 @@ local function finder(opts, ctx)
 				local ui = require("snoogle.ui")
 				local parsed = require("snoogle.core.cmd").parse_output_line(item.text)
 				if parsed == nil then
-					return nil
+					return false
 				end
 				local entry = require("snoogle.core.model").from_hoogle(parsed)
 				if entry == nil then
-					return nil
+					return false
 				end
 				item.line = ui.formatItemLine(entry)
 				item.preview = {
