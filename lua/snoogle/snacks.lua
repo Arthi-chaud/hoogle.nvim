@@ -24,10 +24,8 @@ local function finder(opts, ctx)
 			notify = true,
 			cmd = cmd,
 			args = args,
-
 			--- @type snacks.picker.transform
 			transform = function(item)
-				local ui = require("snoogle.ui")
 				local parsed = require("snoogle.core.cmd").parse_output_line(item.text)
 				if parsed == nil then
 					return false
@@ -37,17 +35,22 @@ local function finder(opts, ctx)
 					return false
 				end
 				item.data = entry
-				item.line = ui.formatItemLine(entry)
-				item.preview = {
-					text = ui.formatItemPreview(entry),
-					ft = "markdown",
-				}
-
 				return item
 			end,
 		}),
 		ctx
 	)
+end
+
+--- @param segments snoogle.ui.HighlightedLine
+--- @return snacks.picker.Highlight[]
+local function highlighted_line_to_highlights(segments)
+	--- @type snacks.picker.Highlight[]
+	local hl = {}
+	for _, segment in ipairs(segments) do
+		hl[#hl + 1] = { segment.text, segment.hl_group }
+	end
+	return hl
 end
 
 --- @type snacks.picker.Config
@@ -60,6 +63,17 @@ M.source = {
 	preview = "preview",
 	show_delay = 500,
 	show_empty = true,
+	transform = function(item)
+		local ui = require("snoogle.ui")
+		item.preview = {
+			text = ui.format_item_preview(item.data),
+			ft = "markdown",
+		}
+	end,
+	format = function(item)
+		local segments = require("snoogle.ui").format_item_line(item.data)
+		return highlighted_line_to_highlights(segments)
+	end,
 	actions = {
 		open_browser = function(_, item, _)
 			local data = item.data
