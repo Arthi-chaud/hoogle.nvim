@@ -71,8 +71,22 @@ M.source = {
 		}
 	end,
 	format = function(item)
-		local segments = require("snoogle.ui").format_item_line(item.data)
-		return highlighted_line_to_highlights(segments)
+		local ui = require("snoogle.ui")
+		---@type snoogle.SearchItem
+		local data = item.data
+
+		if data.symbol ~= nil then
+			--- @type snacks.picker.Highlight[]
+			local ret = {}
+			Snacks.picker.highlight.format(item, data.symbol.name, ret, { lang = "haskell" })
+			local trailing_segment = ui.format_symbol_line_trailing(data.symbol)
+			ret[#ret + 1] = { trailing_segment.text, trailing_segment.hl_group }
+			return ret
+		elseif data.module ~= nil then
+			return highlighted_line_to_highlights(ui.format_module_line(data.module))
+		elseif data.pkg ~= nil then
+			return highlighted_line_to_highlights(ui.format_package_line(data.pkg))
+		end
 	end,
 	actions = {
 		open_browser = function(_, item, _)

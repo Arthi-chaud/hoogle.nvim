@@ -24,8 +24,7 @@ describe("Parse & Convert Hoogle Data", function()
 
 		--- @type snoogle.SearchItem.Symbol
 		local symbol = item.symbol
-		assert.are.equal("fmap", symbol.name)
-		assert.are.equal("Functor f => (a -> b) -> f a -> f b", symbol.signature)
+		assert.are.equal("fmap :: Functor f => (a -> b) -> f a -> f b", symbol.name)
 		assert.are.equal("Prelude", symbol.module.name)
 		assert.are.equal("base", symbol.module.package.name)
 	end)

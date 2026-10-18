@@ -23,8 +23,7 @@
 --- @field module? snoogle.SearchItem.Module
 
 --- @class snoogle.SearchItem.Symbol
---- @field name string The name of the symbol
---- @field signature string | nil The type signature
+--- @field name string The name of the symbol with its signature
 --- @field module snoogle.SearchItem.Module The module exporting the symbol
 --- @field url string
 
@@ -47,15 +46,6 @@ local function remove_prefix(s, prefix)
 	return s
 end
 
---- @param s string map :: (a -> b) -> f a -> f b
---- @return string,string | nil
-local function parse_symbol(s)
-	for fname, sig in string.gmatch(s, "(.+) :: (.+)") do
-		return fname, sig
-	end
-	return s, nil
-end
-
 local M = {}
 
 --- @param item snoogle.hoogle.SearchItem
@@ -65,10 +55,8 @@ function M.from_hoogle(item)
 	local result = { htmlDoc = item.docs, symbol = nil, module = nil, pkg = nil }
 
 	if item.type == "" then
-		local symbol_name, symbol_signature = parse_symbol(item.item)
 		result.symbol = {
-			name = symbol_name,
-			signature = symbol_signature,
+			name = item.item,
 			url = item.url,
 			module = {
 				name = item.module.name or "",
@@ -120,6 +108,10 @@ function M.get_name(item)
 	elseif item.pkg ~= nil then
 		return item.pkg.name
 	elseif item.symbol ~= nil then
+		for fname, _ in string.gmatch(item.symbol.name, "(.+) :: (.+)") do
+			return fname
+		end
+		-- TODO: Handle class names, type syn, etc.
 		return item.symbol.name
 	end
 end

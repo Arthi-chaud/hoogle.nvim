@@ -1,44 +1,41 @@
 local M = {}
 
+---@param symbol snoogle.SearchItem.Symbol
+---@return snoogle.ui.HighlightedLineSegment
+function M.format_symbol_line_trailing(symbol)
+	return {
+		text = string.format(" (%s) [%s]", symbol.module.name, symbol.module.package.name),
+		hl_group = "@comment",
+	}
+end
+
 --- @alias snoogle.ui.HighlightedLine snoogle.ui.HighlightedLineSegment[]
 ---
 --- @class snoogle.ui.HighlightedLineSegment
 --- @field text string
 --- @field hl_group string
 
----@param item snoogle.SearchItem
+---@param p snoogle.SearchItem.Package
 ---@return snoogle.ui.HighlightedLine
-function M.format_item_line(item)
+function M.format_package_line(p)
 	--- @type snoogle.ui.HighlightedLine
-	local segments = {}
+	local segments = {
+		{ text = "package ", hl_group = "@keyword" },
+		{ text = p.name, hl_group = "@namespace" },
+	}
 
-	if item.pkg ~= nil then
-		segments[#segments + 1] = { text = "package ", hl_group = "@keyword" }
-		segments[#segments + 1] = { text = item.pkg.name, hl_group = "@namespace" }
-	elseif item.module ~= nil then
-		segments[#segments + 1] = { text = "module ", hl_group = "@keyword" }
-		segments[#segments + 1] = { text = item.module.name, hl_group = "@namespace" }
-		segments[#segments + 1] = { text = string.format(" (%s)", item.module.package.name), hl_group = "@comment" }
-	elseif item.symbol ~= nil then
-		segments[#segments + 1] = { text = item.symbol.name, hl_group = "@constructor" }
-		local signature = item.symbol.signature
-		if signature ~= nil and signature:len() > 0 then
-			segments[#segments + 1] = { text = " :: ", hl_group = "@operator" }
-			segments[#segments + 1] = { text = signature, hl_group = "@type" }
+	return segments
+end
 
-			-- for _, t in string.gmatch(signature, "([^" .. "\\s" .. "]+)") do
-			-- 	local hl = "@type"
-			-- 	if t == "->" then
-			-- 		hl = "@operator"
-			-- 	end
-			-- 	segments[#segments + 1] = { text = t, hl_group = hl }
-			-- end
-		end
-		segments[#segments + 1] = {
-			text = string.format(" (%s) [%s]", item.symbol.module.name, item.symbol.module.package.name),
-			hl_group = "@comment",
-		}
-	end
+---@param m snoogle.SearchItem.Module
+---@return snoogle.ui.HighlightedLine
+function M.format_module_line(m)
+	--- @type snoogle.ui.HighlightedLine
+	local segments = {
+		{ text = "module ", hl_group = "@keyword" },
+		{ text = m.name, hl_group = "@namespace" },
+		{ text = string.format(" (%s)", m.package.name), hl_group = "@comment" },
+	}
 
 	return segments
 end
@@ -54,10 +51,9 @@ function M.format_item_preview(item)
 		header = string.format("%smodule %s \\(%s\\)", header_top, item.module.name, item.module.package.name)
 	elseif item.symbol ~= nil then
 		header = string.format(
-			"%s```haskell\n%s :: %s\n-- From %s in '%s'\n```",
+			"%s```haskell\n%s\n-- From %s in '%s'\n```",
 			header_top,
 			item.symbol.name,
-			item.symbol.signature,
 			item.symbol.module.name,
 			item.symbol.module.package.name
 		)
