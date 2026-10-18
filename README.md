@@ -6,7 +6,7 @@ _[Snacks.nvim](https://github.com/folke/snacks.nvim)_ + _[Hoogle](https://github
 
 ## Demo
 
-https://github.com/user-attachments/assets/cf590b15-9708-406a-a335-3cb205227a62
+https://github.com/user-attachments/assets/b0b1703e-0b8a-487b-b357-fc2a63d8ae75
 
 ## Setup
 
