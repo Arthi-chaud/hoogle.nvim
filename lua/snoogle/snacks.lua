@@ -2,44 +2,49 @@ local M = {}
 
 ---@module 'snacks'
 
----@class snacks.picker.hoogle.Config
----@field use_stack? boolean
----@field count? integer
+---@param opts snoogle.Config
+function M.get_finder(opts)
+	---@type snacks.picker.finder
+	return function(_, ctx)
+		if ctx.filter.search == "" then
+			return function() end
+		end
 
----@param opts snacks.picker.hoogle.Config
----@type snacks.picker.finder
-local function finder(opts, ctx)
-	if ctx.filter.search == "" then
-		return function() end
+		local use_stack = opts.use_stack ~= nil
+				and (type(opts.use_stack) == "boolean" and (opts.use_stack == true) or (require("snoogle.core.stack").is_in_stack_project(
+					ctx:cwd()
+				)))
+			or false
+		--- @cast use_stack boolean
+
+		local cmd, args = require("snoogle.core.cmd").get_cmd({
+			use_stack = use_stack,
+			count = opts.limit or 25,
+		}, ctx.filter.search)
+
+		return require("snacks.picker.source.proc").proc(
+
+			ctx:opts({
+				notify = true,
+				cmd = cmd,
+				args = args,
+				--- @type snacks.picker.transform
+				transform = function(item)
+					local parsed = require("snoogle.core.cmd").parse_output_line(item.text)
+					if parsed == nil then
+						return false
+					end
+					local entry = require("snoogle.core.model").from_hoogle(parsed)
+					if entry == nil then
+						return false
+					end
+					item.data = entry
+					return item
+				end,
+			}),
+			ctx
+		)
 	end
-
-	local cmd, args = require("snoogle.core.cmd").get_cmd({
-		use_stack = opts.use_stack,
-		count = opts.count or 25,
-	}, ctx.filter.search)
-
-	return require("snacks.picker.source.proc").proc(
-
-		ctx:opts({
-			notify = true,
-			cmd = cmd,
-			args = args,
-			--- @type snacks.picker.transform
-			transform = function(item)
-				local parsed = require("snoogle.core.cmd").parse_output_line(item.text)
-				if parsed == nil then
-					return false
-				end
-				local entry = require("snoogle.core.model").from_hoogle(parsed)
-				if entry == nil then
-					return false
-				end
-				item.data = entry
-				return item
-			end,
-		}),
-		ctx
-	)
 end
 
 --- @param segments snoogle.ui.HighlightedLine
@@ -53,59 +58,62 @@ local function highlighted_line_to_highlights(segments)
 	return hl
 end
 
---- @type snacks.picker.Config
-M.source = {
-	prompt = ">>= ",
-	notify = true,
-	layout = { cycle = true },
-	finder = finder,
-	live = true,
-	preview = "preview",
-	show_delay = 500,
-	show_empty = true,
-	transform = function(item)
-		local ui = require("snoogle.ui")
-		item.preview = {
-			text = ui.format_item_preview(item.data),
-			ft = "markdown",
-		}
-	end,
-	format = function(item)
-		local ui = require("snoogle.ui")
-		---@type snoogle.SearchItem
-		local data = item.data
+--- @param opts snoogle.Config
+--- @return snacks.picker.Config
+function M.get_source(opts)
+	return {
+		prompt = ">>= ",
+		notify = true,
+		layout = { cycle = true },
+		finder = M.get_finder(opts),
+		live = true,
+		preview = "preview",
+		show_delay = 500,
+		show_empty = true,
+		transform = function(item)
+			local ui = require("snoogle.ui")
+			item.preview = {
+				text = ui.format_item_preview(item.data),
+				ft = "markdown",
+			}
+		end,
+		format = function(item)
+			local ui = require("snoogle.ui")
+			---@type snoogle.SearchItem
+			local data = item.data
 
-		if data.symbol ~= nil then
-			--- @type snacks.picker.Highlight[]
-			local ret = {}
-			Snacks.picker.highlight.format(item, data.symbol.name, ret, { lang = "haskell" })
-			local trailing_segment = ui.format_symbol_line_trailing(data.symbol)
-			ret[#ret + 1] = { trailing_segment.text, trailing_segment.hl_group }
-			return ret
-		elseif data.module ~= nil then
-			return highlighted_line_to_highlights(ui.format_module_line(data.module))
-		elseif data.pkg ~= nil then
-			return highlighted_line_to_highlights(ui.format_package_line(data.pkg))
-		end
-	end,
-	actions = {
-		open_browser = function(_, item, _)
-			local data = item.data
-			--- @cast data snoogle.SearchItem
-			local actions = require("snoogle.actions")
-			local models = require("snoogle.core.model")
-			actions.open_browser(models.get_url(data))
+			if data.symbol ~= nil then
+				--- @type snacks.picker.Highlight[]
+				local ret = {}
+				Snacks.picker.highlight.format(item, data.symbol.name, ret, { lang = "haskell" })
+				local trailing_segment = ui.format_symbol_line_trailing(data.symbol)
+				ret[#ret + 1] = { trailing_segment.text, trailing_segment.hl_group }
+				return ret
+			elseif data.module ~= nil then
+				return highlighted_line_to_highlights(ui.format_module_line(data.module))
+			elseif data.pkg ~= nil then
+				return highlighted_line_to_highlights(ui.format_package_line(data.pkg))
+			end
 		end,
-		copy_to_clipboard = function(self, item, _)
-			local data = item.data
-			--- @cast data snoogle.SearchItem
-			local actions = require("snoogle.actions")
-			local models = require("snoogle.core.model")
-			Snacks.notify.info("Copied to clipboard!")
-			self:close()
-			actions.copy_to_clipboard(models.get_name(data))
-		end,
-	},
-}
+		actions = {
+			open_browser = function(_, item, _)
+				local data = item.data
+				--- @cast data snoogle.SearchItem
+				local actions = require("snoogle.actions")
+				local models = require("snoogle.core.model")
+				actions.open_browser(models.get_url(data))
+			end,
+			copy_to_clipboard = function(self, item, _)
+				local data = item.data
+				--- @cast data snoogle.SearchItem
+				local actions = require("snoogle.actions")
+				local models = require("snoogle.core.model")
+				Snacks.notify.info("Copied to clipboard!")
+				self:close()
+				actions.copy_to_clipboard(models.get_name(data))
+			end,
+		},
+	}
+end
 
 return M

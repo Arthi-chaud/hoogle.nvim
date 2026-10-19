@@ -1,7 +1,9 @@
 local M = {}
-function M.setup(_)
+
+--- @param opts snoogle.Config
+function M.setup(opts)
 	if Snacks and pcall(require, "snacks.picker") then
-		Snacks.picker.sources.hoogle = require("snoogle/snacks").source
+		Snacks.picker.sources.hoogle = require("snoogle/snacks").get_source(opts)
 	end
 end
 

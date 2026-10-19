@@ -1,10 +1,10 @@
 local M = {}
 
----@class snoogle.cmdOpts
+---@class snoogle.CmdOpts
 ---@field use_stack? boolean
 ---@field count integer
 
---- @param opts snoogle.cmdOpts
+--- @param opts snoogle.CmdOpts
 --- @param query string
 function M.get_cmd(opts, query)
 	local cmd = "hoogle"
