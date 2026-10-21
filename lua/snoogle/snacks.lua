@@ -47,13 +47,24 @@ function M.get_finder(opts)
 	end
 end
 
---- @param segments snoogle.ui.HighlightedLine
---- @return snacks.picker.Highlight[]
-local function highlighted_line_to_highlights(segments)
-	--- @type snacks.picker.Highlight[]
+--- @param segments snoogle.HighlightedText
+--- @return snacks.picker.Highlight[][]
+local function to_snacks_highlights(segments)
 	local hl = {}
 	for _, segment in ipairs(segments) do
-		hl[#hl + 1] = { segment.text, segment.hl_group }
+		if segment.highlights ~= nil then
+			for _, h in ipairs(segment.highlights or {}) do
+				hl[#hl + 1] = {
+					hl_group = h.hl_group,
+					col = h.start_,
+					end_col = h.end_,
+					priority = h.priority,
+				}
+			end
+			hl[#hl + 1] = { segment.text }
+		else
+			hl[#hl + 1] = { segment.text, segment.default_hl }
+		end
 	end
 	return hl
 end
@@ -71,28 +82,23 @@ function M.get_source(opts)
 		show_delay = 500,
 		show_empty = true,
 		transform = function(item)
-			local ui = require("snoogle.ui")
+			local ui = require("snoogle.ui.preview")
 			item.preview = {
 				text = ui.format_item_preview(item.data),
 				ft = "markdown",
 			}
 		end,
 		format = function(item)
-			local ui = require("snoogle.ui")
+			local ui = require("snoogle.ui.line")
 			---@type snoogle.SearchItem
 			local data = item.data
 
 			if data.symbol ~= nil then
-				--- @type snacks.picker.Highlight[]
-				local ret = {}
-				Snacks.picker.highlight.format(item, data.symbol.name, ret, { lang = "haskell" })
-				local trailing_segment = ui.format_symbol_line_trailing(data.symbol)
-				ret[#ret + 1] = { trailing_segment.text, trailing_segment.hl_group }
-				return ret
+				return to_snacks_highlights(ui.format_symbol_line(data.symbol))
 			elseif data.module ~= nil then
-				return highlighted_line_to_highlights(ui.format_module_line(data.module))
+				return to_snacks_highlights(ui.format_module_line(data.module))
 			elseif data.pkg ~= nil then
-				return highlighted_line_to_highlights(ui.format_package_line(data.pkg))
+				return to_snacks_highlights(ui.format_package_line(data.pkg))
 			end
 		end,
 		actions = {
