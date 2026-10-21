@@ -23,7 +23,8 @@
 --- @field module? snoogle.SearchItem.Module
 
 --- @class snoogle.SearchItem.Symbol
---- @field name string The name of the symbol with its signature
+--- @field name string The isolated name of the symbol (e.g. M)
+--- @field decl string The name of the symbol with its signature (e.g. class () => M a )
 --- @field module snoogle.SearchItem.Module The module exporting the symbol
 --- @field url string
 
@@ -56,7 +57,8 @@ function M.from_hoogle(item)
 
 	if item.type == "" then
 		result.symbol = {
-			name = item.item,
+			name = M.isolate_symbol_name(item.item),
+			decl = item.item,
 			url = item.url,
 			module = {
 				name = item.module.name or "",
@@ -108,12 +110,32 @@ function M.get_name(item)
 	elseif item.pkg ~= nil then
 		return item.pkg.name
 	elseif item.symbol ~= nil then
-		for fname, _ in string.gmatch(item.symbol.name, "(.+) :: (.+)") do
-			return fname
-		end
-		-- TODO: Handle class names, type syn, etc.
 		return item.symbol.name
 	end
+end
+
+--- @private
+--- @param decl string e.g. fmap :: (a -> b) -> [a] -> [b]
+--- @return string
+function M.isolate_symbol_name(decl)
+	for _, d_type in ipairs({ "class", "newtype", "data" }) do
+		if decl:sub(1, #d_type) == d_type then
+			for name in string.gmatch(decl, "=> (%w+)") do
+				return name
+			end
+
+			for name in string.gmatch(decl, d_type .. " (%w+)") do
+				return name
+			end
+		end
+	end
+	for name in string.gmatch(decl, "type (%w+) ") do
+		return name
+	end
+	for name in string.gmatch(decl, "(%w+) :: ") do
+		return name
+	end
+	return decl
 end
 
 return M

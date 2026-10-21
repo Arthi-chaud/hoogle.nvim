@@ -13,7 +13,7 @@ function M.format_item_preview(item)
 		header = string.format(
 			"%s```haskell\n%s\n-- From %s in '%s'\n```",
 			header_top,
-			item.symbol.name,
+			item.symbol.decl,
 			item.symbol.module.name,
 			item.symbol.module.package.name
 		)
@@ -41,6 +41,10 @@ function M.html_doc_to_md(s)
 		:gsub("</pre>", "\n```")
 		:gsub("<h4>", "#### ")
 		:gsub("</h4>", "")
+		:gsub("<ul>", "")
+		:gsub("</ul>", "")
+		:gsub("<li>", "- ")
+		:gsub("</li>", "")
 
 	return res
 end

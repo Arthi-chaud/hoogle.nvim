@@ -3,7 +3,7 @@ local M = {}
 ---@param symbol snoogle.SearchItem.Symbol
 ---@return snoogle.HighlightedText
 function M.format_symbol_line(symbol)
-	local ret = require("snoogle.highlight").highlight_text({ code = symbol.name })
+	local ret = require("snoogle.highlight").highlight_text({ code = symbol.decl })
 	ret[#ret + 1] = {
 		text = string.format(" (%s) [%s]", symbol.module.name, symbol.module.package.name),
 		default_hl = "@comment",
