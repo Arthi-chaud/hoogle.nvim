@@ -124,6 +124,10 @@ function M.isolate_symbol_name(decl)
 				return name
 			end
 
+			-- Infixes
+			for _, name, _ in string.gmatch(decl, d_type .. " %((.+)%) (.+) %((.+)%)") do
+				return name
+			end
 			for name in string.gmatch(decl, d_type .. " (%w+)") do
 				return name
 			end
@@ -133,6 +137,10 @@ function M.isolate_symbol_name(decl)
 		return name
 	end
 	for name in string.gmatch(decl, "(%w+) :: ") do
+		return name
+	end
+	-- Infixes
+	for name in string.gmatch(decl, "%((.+)%) :: ") do
 		return name
 	end
 	return decl
