@@ -19,6 +19,7 @@ function M.get_finder(opts)
 
 		local cmd, args = require("snoogle.core.cmd").get_cmd({
 			use_stack = use_stack,
+			db_path = opts.db_path,
 			count = opts.limit or 25,
 		}, ctx.filter.search)
 

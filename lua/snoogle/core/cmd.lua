@@ -3,6 +3,7 @@ local M = {}
 ---@class snoogle.CmdOpts
 ---@field use_stack? boolean
 ---@field count integer
+---@field db_path? string
 
 --- @param opts snoogle.CmdOpts
 --- @param query string
@@ -15,12 +16,19 @@ function M.get_cmd(opts, query)
 		args = { "hoogle", "--no-setup", "--" }
 	end
 
-	table.insert(args, query)
+	if opts.db_path ~= nil then
+		table.insert(args, "--database")
+		table.insert(args, opts.db_path)
+	end
 
 	table.insert(args, "--jsonl")
 
 	table.insert(args, "--count")
 	table.insert(args, tostring(opts.count))
+
+	-- NOTE: if query is the first arg, if it _looks like_ the "generate" keyword
+	-- if will fail, as it will run "hoogle generate"
+	table.insert(args, query)
 
 	return cmd, args
 end

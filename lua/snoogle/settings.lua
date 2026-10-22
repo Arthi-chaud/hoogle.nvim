@@ -3,4 +3,5 @@
 
 ---@class snoogle.Config
 ---@field use_stack? snoogle.UseStack
+---@field db_path? string absolute path to the Hoogle database (.hoo file) to use
 ---@field limit? integer -- Default to 25

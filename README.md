@@ -17,6 +17,7 @@ https://github.com/user-attachments/assets/b0b1703e-0b8a-487b-b357-fc2a63d8ae75
 +    ---@type snoogle.Config
 +  	 opts = {
 +       use_stack = false --- @type boolean | "in_project"
++       db_path = "" --- @type string? optional
 +    },
 +  },
 {
