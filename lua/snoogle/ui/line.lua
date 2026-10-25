@@ -38,4 +38,16 @@ function M.format_module_line(m)
 	return segments
 end
 
+---@param data snoogle.SearchItem
+---@return snoogle.HighlightedText
+function M.format_line(data)
+	if data.symbol ~= nil then
+		return M.format_symbol_line(data.symbol)
+	elseif data.module ~= nil then
+		return M.format_module_line(data.module)
+	elseif data.pkg ~= nil then
+		return M.format_package_line(data.pkg)
+	end
+end
+
 return M

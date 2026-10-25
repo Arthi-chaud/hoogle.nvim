@@ -54,7 +54,7 @@ end
 
 --- @param segments snoogle.HighlightedText
 --- @return snacks.picker.Highlight[][]
-local function to_snacks_highlights(segments)
+function M.to_snacks_highlights(segments)
 	local hl = {}
 	for _, segment in ipairs(segments) do
 		if segment.highlights ~= nil then
@@ -95,14 +95,7 @@ function M.get_source(opts)
 		format = function(item)
 			---@type snoogle.SearchItem
 			local data = item.data
-
-			if data.symbol ~= nil then
-				return to_snacks_highlights(line.format_symbol_line(data.symbol))
-			elseif data.module ~= nil then
-				return to_snacks_highlights(line.format_module_line(data.module))
-			elseif data.pkg ~= nil then
-				return to_snacks_highlights(line.format_package_line(data.pkg))
-			end
+			return M.to_snacks_highlights(line.format_line(data))
 		end,
 		actions = {
 			open_browser = function(_, item, _)
