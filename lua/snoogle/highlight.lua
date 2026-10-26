@@ -12,7 +12,7 @@ M._scratch = {} ---@type table<string, number>
 --- @param opts { code: string, }
 function M.highlight_text(opts)
 	local lang = "haskell"
-	local ret = { text = opts.code, default_hl = "@text", highlights = {} } ---@type snoogle.HighlightedTextSegment
+	local ret = { text = opts.code, default_hl = "@text", highlights = nil } ---@type snoogle.HighlightedTextSegment
 
 	local parser, buf ---@type vim.treesitter.LanguageTree?, number?
 
@@ -22,7 +22,7 @@ function M.highlight_text(opts)
 	parser = ok and parser or nil
 
 	if not (parser and buf) then
-		return ret
+		return { ret }
 	end
 	parser:parse(true)
 	parser:for_each_tree(function(tstree, tree)
@@ -44,6 +44,9 @@ function M.highlight_text(opts)
 				local priority = (
 					tonumber(metadata.priority or metadata[capture] and metadata[capture].priority) or 100
 				)
+				if ret.highlights == nil then
+					ret.highlights = {}
+				end
 				table.insert(
 					ret.highlights,
 					{ start_ = start_col, end_ = end_col, hl_group = "@" .. name .. "." .. "lang", priority = priority }
