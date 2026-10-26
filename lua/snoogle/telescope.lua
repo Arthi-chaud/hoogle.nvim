@@ -17,11 +17,27 @@ local displayer = entry_display.create({
 --- @param entry {value: snoogle.SearchItem}
 local function make_display(entry)
 	local text = ""
+	--- @type {[1]: {[1]: number, [2]: number}, [2]: string}[]
+	local highlights = {}
 	local line = ui.format_line(entry.value)
 	for _, segment in ipairs(line) do
+		local text_len = text:len()
 		text = text .. segment.text
+		if segment.highlights == nil then
+			highlights[#highlights + 1] = {
+				{ text_len, text_len + segment.text:len() },
+				segment.default_hl,
+			}
+		else
+			for _, hl in ipairs(segment.highlights) do
+				highlights[#highlights + 1] = {
+					{ text_len + hl.start_, text_len + hl.end_ },
+					hl.hl_group,
+				}
+			end
+		end
 	end
-	return displayer({ text }) -- TODO: highlights
+	return displayer({ text }), highlights
 end
 
 --- @param opts table
