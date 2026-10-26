@@ -2,9 +2,11 @@ local M = {}
 
 local pickers = require("telescope.pickers")
 local finders = require("telescope.finders")
+local previewers = require("telescope.previewers")
 local cmd = require("snoogle.core.cmd")
 local model = require("snoogle.core.model")
-local ui = require("snoogle.ui.line")
+local ui_line = require("snoogle.ui.line")
+local ui_preview = require("snoogle.ui.preview")
 local entry_display = require("telescope.pickers.entry_display")
 
 local displayer = entry_display.create({
@@ -14,12 +16,25 @@ local displayer = entry_display.create({
 	},
 })
 
+local function splitToLines(input, delimiter)
+	local result = {}
+	local idx = 1
+	local start, end_ = string.find(input, delimiter, idx)
+	while start do
+		table.insert(result, string.sub(input, idx, start - 1))
+		idx = end_ + 1
+		start, end_ = string.find(input, delimiter, idx)
+	end
+	table.insert(result, string.sub(input, idx))
+	return result
+end
+
 --- @param entry {value: snoogle.SearchItem}
 local function make_display(entry)
 	local text = ""
 	--- @type {[1]: {[1]: number, [2]: number}, [2]: string}[]
 	local highlights = {}
-	local line = ui.format_line(entry.value)
+	local line = ui_line.format_line(entry.value)
 	for _, segment in ipairs(line) do
 		local text_len = text:len()
 		text = text .. segment.text
@@ -72,9 +87,31 @@ function M.picker(opts)
 					return {
 						value = data,
 						ordinal = 1,
-						-- TODO: return line and highlight seperatedly
 						display = make_display,
 					}
+				end,
+			}),
+			previewer = previewers.new_buffer_previewer({
+				dynamic_title = function(_, entry)
+					--- @type snoogle.SearchItem
+					local value = entry.value
+					return model.get_name(value)
+				end,
+				define_preview = function(self, entry)
+					--- @type snoogle.SearchItem
+					local value = entry.value
+					local markdown = ui_preview.format_item_preview(value)
+					vim.api.nvim_buf_set_lines(self.state.bufnr, 0, -1, true, splitToLines(markdown, "\n"))
+					vim.bo[self.state.bufnr].filetype = "markdown"
+					vim.bo[self.state.bufnr].syntax = "markdown"
+					-- TODO:
+					-- require("render-markdown").render({
+					-- 	buf = self.state.bufnr,
+					-- 	config = {
+					-- 		render_modes = true,
+					-- 		bullet = { enabled = opts.bullets ~= false },
+					-- 	},
+					-- })
 				end,
 			}),
 		})
