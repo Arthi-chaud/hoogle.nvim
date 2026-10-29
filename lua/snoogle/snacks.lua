@@ -7,6 +7,7 @@ local model = require("snoogle.core.model")
 local utils = require("snoogle.core.utils")
 local picker_proc = require("snacks.picker.source.proc")
 local actions = require("snoogle.actions")
+local settings = require("snoogle.settings")
 local line = require("snoogle.ui.line")
 local preview = require("snoogle.ui.preview")
 
@@ -23,7 +24,7 @@ function M.get_finder(opts)
 		local cmd, args = hoogle.get_cmd({
 			use_stack = use_stack,
 			db_path = opts.db_path,
-			count = opts.limit or 25,
+			count = opts.limit or settings.DEFAULT_LIMIT,
 		}, ctx.filter.search)
 
 		return picker_proc.proc(
