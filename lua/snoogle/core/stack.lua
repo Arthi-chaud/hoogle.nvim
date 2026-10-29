@@ -12,7 +12,7 @@ end
 --- Gets the stack root for a buffer or path.
 --- Defaults to the current buffer.
 ---@param path? number|string buffer or path
----@return string?
+---@return boolean
 function M.is_in_stack_project(path)
 	path = path or 0
 	path = type(path) == "number" and vim.api.nvim_buf_get_name(path) or path --[[@as string]]
@@ -20,16 +20,16 @@ function M.is_in_stack_project(path)
 	path = svim.fs.normalize(path)
 
 	if is_stack_root(path) then
-		return path
+		return true
 	end
 
 	for dir in vim.fs.parents(path) do
 		if is_stack_root(dir) then
-			return svim.fs.normalize(dir)
+			return true
 		end
 	end
 
-	return nil
+	return false
 end
 
 return M
