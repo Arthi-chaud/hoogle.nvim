@@ -2,8 +2,9 @@ local M = {}
 
 --- @param opts snoogle.Config
 function M.setup(opts)
+	require("snoogle.state").set_config(opts)
 	if Snacks and pcall(require, "snacks.picker") then
-		Snacks.picker.sources.hoogle = require("snoogle.snacks").get_source(opts)
+		Snacks.picker.sources.hoogle = require("snoogle.snacks").get_source()
 	end
 
 	local has_telescope, telescope = pcall(require, "telescope")
