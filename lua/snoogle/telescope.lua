@@ -3,6 +3,9 @@ local M = {}
 local pickers = require("telescope.pickers")
 local finders = require("telescope.finders")
 local previewers = require("telescope.previewers")
+local state = require("snoogle.state")
+local settings = require("snoogle.settings")
+local utils = require("snoogle.core.utils")
 local cmd = require("snoogle.core.cmd")
 local model = require("snoogle.core.model")
 local ui_line = require("snoogle.ui.line")
@@ -57,8 +60,8 @@ end
 
 --- @param opts table
 function M.picker(opts)
-	--- @type snoogle.CmdOpts
-	local cmd_opts = { count = 25 } --TODO:
+	local config = state.get_config()
+	local use_stack = utils.should_use_stack(opts)
 
 	pickers
 		.new(opts, {
@@ -70,7 +73,11 @@ function M.picker(opts)
 					if not query or string.len(query) < 2 then
 						return nil
 					end
-					local exec, args = cmd.get_cmd(cmd_opts, query)
+					local exec, args = cmd.get_cmd({
+						use_stack = use_stack,
+						db_path = config.db_path,
+						count = config.limit or settings.DEFAULT_LIMIT,
+					}, query)
 					table.insert(args, 1, exec)
 					local command = args
 					return command

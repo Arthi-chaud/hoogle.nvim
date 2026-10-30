@@ -6,6 +6,7 @@ local hoogle = require("snoogle.core.cmd")
 local model = require("snoogle.core.model")
 local utils = require("snoogle.core.utils")
 local picker_proc = require("snacks.picker.source.proc")
+local state = require("snoogle.state")
 local actions = require("snoogle.actions")
 local settings = require("snoogle.settings")
 local line = require("snoogle.ui.line")
@@ -74,14 +75,13 @@ function M.to_snacks_highlights(segments)
 	return hl
 end
 
---- @param opts snoogle.Config
 --- @return snacks.picker.Config
-function M.get_source(opts)
+function M.get_source()
 	return {
 		prompt = ">>= ",
 		notify = true,
 		layout = { cycle = true },
-		finder = M.get_finder(opts),
+		finder = M.get_finder(state.get_config()),
 		live = true,
 		preview = "preview",
 		show_delay = 500,
