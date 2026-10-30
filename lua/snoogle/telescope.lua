@@ -11,6 +11,9 @@ local model = require("snoogle.core.model")
 local ui_line = require("snoogle.ui.line")
 local ui_preview = require("snoogle.ui.preview")
 local entry_display = require("telescope.pickers.entry_display")
+local action_state = require("telescope.actions.state")
+local actions = require("snoogle.actions")
+local telescope_actions = require("telescope.actions")
 
 local displayer = entry_display.create({
 	separator = " ",
@@ -61,13 +64,36 @@ end
 --- @param opts table
 function M.picker(opts)
 	local config = state.get_config()
-	local use_stack = utils.should_use_stack(opts)
+	local use_stack = utils.should_use_stack(config)
 
 	pickers
 		.new(opts, {
 
 			-- NOTE: https://github.com/nvim-telescope/telescope.nvim/blob/master/developers.md#picker
 			prompt_title = "Hoogle",
+			attach_mappings = function(bufnr, map)
+				for key, action_name in pairs(opts) do
+					local callback = function()
+						if action_name == "open_browser" then
+							local action = action_state.get_selected_entry()
+							local data = action.value
+							--- @cast data snoogle.SearchItem
+							actions.open_browser(model.get_url(data))
+						elseif action_name == "copy_to_clipboard" then
+							local action = action_state.get_selected_entry()
+							local data = action.value
+							--- @cast data snoogle.SearchItem
+							vim.notify("Copied to clipboard!", vim.log.levels.INFO)
+							telescope_actions.close(bufnr)
+							actions.copy_to_clipboard(model.get_name(data))
+						end
+					end
+					map("i", key, callback)
+					map("n", key, callback)
+				end
+
+				return true
+			end,
 			finder = finders.new_async_job({
 				command_generator = function(query)
 					if not query or string.len(query) < 2 then
