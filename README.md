@@ -41,7 +41,7 @@ https://github.com/user-attachments/assets/b0b1703e-0b8a-487b-b357-fc2a63d8ae75
 
 ### Actions
 
-2 actions are available: `copy_to_clipboad` & `open_browser`. For enable them, invoke `Snacks.picker.hoogle()` like this:
+2 actions are available: `copy_to_clipboard` & `open_browser`. For enable them, invoke `Snacks.picker.hoogle()` like this:
 
 ```lua
 Snacks.picker.hoogle({
