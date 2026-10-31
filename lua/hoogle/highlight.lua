@@ -2,17 +2,17 @@ local M = {}
 
 M._scratch = {} ---@type table<string, number>
 
---- @class snoogle.HighlightedTextSegment
+--- @class hoogle.HighlightedTextSegment
 --- @field text string
 --- @field default_hl string
 --- @field highlights? { start_: number, end_: number, hl_group: string, priority: number }[]
 
---- @alias snoogle.HighlightedText snoogle.HighlightedTextSegment[]
+--- @alias hoogle.HighlightedText hoogle.HighlightedTextSegment[]
 
 --- @param opts { code: string, }
 function M.highlight_text(opts)
 	local lang = "haskell"
-	local ret = { text = opts.code, default_hl = "@text", highlights = nil } ---@type snoogle.HighlightedTextSegment
+	local ret = { text = opts.code, default_hl = "@text", highlights = nil } ---@type hoogle.HighlightedTextSegment
 
 	local parser, buf ---@type vim.treesitter.LanguageTree?, number?
 

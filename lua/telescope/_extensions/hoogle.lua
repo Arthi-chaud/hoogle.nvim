@@ -11,7 +11,7 @@ return require("telescope").register_extension({
 	end,
 	exports = {
 		hoogle = function()
-			require("snoogle.telescope").picker(mappings)
+			require("hoogle.telescope").picker(mappings)
 		end,
 	},
 })

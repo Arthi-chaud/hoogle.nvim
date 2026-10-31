@@ -1,39 +1,39 @@
 -- Source: https://github.com/ndmitchell/blob/df554c496c676874a889cc6526e154c2d8b5bc7d/src/Input/Item.hs#L112
 
---- @class snoogle.hoogle.SearchItem
+--- @class hoogle.hoogle.SearchItem
 --- @field docs string -- HTML documentation to show
 --- @field item string -- HTML span of the item
 --- @field type "package" | "module" | ""
 --- @field url string
---- @field module snoogle.hoogle.SearchItem.Module
---- @field package snoogle.hoogle.SearchItem.Package
+--- @field module hoogle.hoogle.SearchItem.Module
+--- @field package hoogle.hoogle.SearchItem.Package
 
---- @class snoogle.hoogle.SearchItem.Module -- fields will be omitted if the parent item is of that type
+--- @class hoogle.hoogle.SearchItem.Module -- fields will be omitted if the parent item is of that type
 --- @field name? string
 --- @field url? string
 
---- @class snoogle.hoogle.SearchItem.Package -- fields will be omitted if the parent item is of that type
+--- @class hoogle.hoogle.SearchItem.Package -- fields will be omitted if the parent item is of that type
 --- @field name? string
 --- @field url? string
 
---- @class snoogle.SearchItem
+--- @class hoogle.SearchItem
 --- @field htmlDoc string
---- @field symbol? snoogle.SearchItem.Symbol
---- @field pkg? snoogle.SearchItem.Package
---- @field module? snoogle.SearchItem.Module
+--- @field symbol? hoogle.SearchItem.Symbol
+--- @field pkg? hoogle.SearchItem.Package
+--- @field module? hoogle.SearchItem.Module
 
---- @class snoogle.SearchItem.Symbol
+--- @class hoogle.SearchItem.Symbol
 --- @field name string The isolated name of the symbol (e.g. M)
 --- @field decl string The name of the symbol with its signature (e.g. class () => M a )
---- @field module snoogle.SearchItem.Module The module exporting the symbol
+--- @field module hoogle.SearchItem.Module The module exporting the symbol
 --- @field url string
 
---- @class snoogle.SearchItem.Module
+--- @class hoogle.SearchItem.Module
 --- @field name string The name of the module
---- @field package snoogle.SearchItem.Package
+--- @field package hoogle.SearchItem.Package
 --- @field url string
 
---- @class snoogle.SearchItem.Package
+--- @class hoogle.SearchItem.Package
 --- @field name string The name of the package
 --- @field url string
 
@@ -49,10 +49,10 @@ end
 
 local M = {}
 
---- @param item snoogle.hoogle.SearchItem
---- @return snoogle.SearchItem | nil
+--- @param item hoogle.hoogle.SearchItem
+--- @return hoogle.SearchItem | nil
 function M.from_hoogle(item)
-	---@type snoogle.SearchItem
+	---@type hoogle.SearchItem
 	local result = { htmlDoc = item.docs, symbol = nil, module = nil, pkg = nil }
 
 	if item.type == "" then
@@ -90,7 +90,7 @@ function M.from_hoogle(item)
 	return result
 end
 
---- @param item snoogle.SearchItem
+--- @param item hoogle.SearchItem
 --- @return string
 function M.get_url(item)
 	if item.module ~= nil then
@@ -102,7 +102,7 @@ function M.get_url(item)
 	end
 end
 
---- @param item snoogle.SearchItem
+--- @param item hoogle.SearchItem
 --- @return string
 function M.get_name(item)
 	if item.module ~= nil then

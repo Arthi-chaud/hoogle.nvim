@@ -2,17 +2,17 @@ local M = {}
 
 ---@module 'snacks'
 
-local hoogle = require("snoogle.core.cmd")
-local model = require("snoogle.core.model")
-local utils = require("snoogle.core.utils")
+local hoogle = require("hoogle.core.cmd")
+local model = require("hoogle.core.model")
+local utils = require("hoogle.core.utils")
 local picker_proc = require("snacks.picker.source.proc")
-local state = require("snoogle.state")
-local actions = require("snoogle.actions")
-local settings = require("snoogle.settings")
-local line = require("snoogle.ui.line")
-local preview = require("snoogle.ui.preview")
+local state = require("hoogle.state")
+local actions = require("hoogle.actions")
+local settings = require("hoogle.settings")
+local line = require("hoogle.ui.line")
+local preview = require("hoogle.ui.preview")
 
----@param opts snoogle.Config
+---@param opts hoogle.Config
 function M.get_finder(opts)
 	local use_stack = utils.should_use_stack(opts)
 
@@ -53,7 +53,7 @@ function M.get_finder(opts)
 	end
 end
 
---- @param segments snoogle.HighlightedText
+--- @param segments hoogle.HighlightedText
 --- @return snacks.picker.Highlight[][]
 function M.to_snacks_highlights(segments)
 	local hl = {}
@@ -93,19 +93,19 @@ function M.get_source()
 			}
 		end,
 		format = function(item)
-			---@type snoogle.SearchItem
+			---@type hoogle.SearchItem
 			local data = item.data
 			return M.to_snacks_highlights(line.format_line(data))
 		end,
 		actions = {
 			open_browser = function(_, item, _)
 				local data = item.data
-				--- @cast data snoogle.SearchItem
+				--- @cast data hoogle.SearchItem
 				actions.open_browser(model.get_url(data))
 			end,
 			copy_to_clipboard = function(self, item, _)
 				local data = item.data
-				--- @cast data snoogle.SearchItem
+				--- @cast data hoogle.SearchItem
 				Snacks.notify.info("Copied to clipboard!")
 				self:close()
 				actions.copy_to_clipboard(model.get_name(data))

@@ -1,8 +1,8 @@
 local M = {}
 
-local stack = require("snoogle.core.stack")
+local stack = require("hoogle.core.stack")
 
---- @param config snoogle.Config
+--- @param config hoogle.Config
 --- @return boolean
 function M.should_use_stack(config)
 	if config.use_stack == nil then
