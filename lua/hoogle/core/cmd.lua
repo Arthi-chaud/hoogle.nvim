@@ -34,7 +34,7 @@ function M.get_cmd(opts, query)
 end
 
 ---@param out string raw output
----@return hoogle.hoogle.SearchItem | nil
+---@return hoogle.Output.SearchItem | nil
 function M.parse_output_line(out)
 	if out == "No results found" then
 		return nil

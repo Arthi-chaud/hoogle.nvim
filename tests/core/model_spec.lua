@@ -1,6 +1,6 @@
 ---@diagnostic disable: need-check-nil
 --- @param filepath string path to the json file to parse, relative to the directory from where the tests are run
---- @return hoogle.hoogle.SearchItem
+--- @return hoogle.Output.SearchItem
 local function read_json(filepath)
 	local fs = io.open(filepath, "r")
 	assert.truthy(fs)

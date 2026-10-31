@@ -1,18 +1,18 @@
 -- Source: https://github.com/ndmitchell/blob/df554c496c676874a889cc6526e154c2d8b5bc7d/src/Input/Item.hs#L112
 
---- @class hoogle.hoogle.SearchItem
+--- @class hoogle.Output.SearchItem
 --- @field docs string -- HTML documentation to show
 --- @field item string -- HTML span of the item
 --- @field type "package" | "module" | ""
 --- @field url string
---- @field module hoogle.hoogle.SearchItem.Module
---- @field package hoogle.hoogle.SearchItem.Package
+--- @field module hoogle.Output.SearchItem.Module
+--- @field package hoogle.Output.SearchItem.Package
 
---- @class hoogle.hoogle.SearchItem.Module -- fields will be omitted if the parent item is of that type
+--- @class hoogle.Output.SearchItem.Module -- fields will be omitted if the parent item is of that type
 --- @field name? string
 --- @field url? string
 
---- @class hoogle.hoogle.SearchItem.Package -- fields will be omitted if the parent item is of that type
+--- @class hoogle.Output.SearchItem.Package -- fields will be omitted if the parent item is of that type
 --- @field name? string
 --- @field url? string
 
@@ -49,7 +49,7 @@ end
 
 local M = {}
 
---- @param item hoogle.hoogle.SearchItem
+--- @param item hoogle.Output.SearchItem
 --- @return hoogle.SearchItem | nil
 function M.from_hoogle(item)
 	---@type hoogle.SearchItem
