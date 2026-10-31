@@ -1,7 +1,7 @@
---- @alias snoogle.UseStack "in_project" | boolean
+--- @alias hoogle.UseStack "in_project" | boolean
 
----@class snoogle.Config
----@field use_stack? snoogle.UseStack
+---@class hoogle.Config
+---@field use_stack? hoogle.UseStack
 ---@field db_path? string absolute path to the Hoogle database (.hoo file) to use
 ---@field limit? integer -- Default to 25
 

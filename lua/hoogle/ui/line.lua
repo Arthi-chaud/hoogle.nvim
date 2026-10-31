@@ -1,9 +1,9 @@
 local M = {}
 
-local highlights = require("snoogle.highlight")
+local highlights = require("hoogle.highlight")
 
----@param symbol snoogle.SearchItem.Symbol
----@return snoogle.HighlightedText
+---@param symbol hoogle.SearchItem.Symbol
+---@return hoogle.HighlightedText
 function M.format_symbol_line(symbol)
 	local ret = highlights.highlight_text({ code = symbol.decl })
 	ret[#ret + 1] = {
@@ -13,10 +13,10 @@ function M.format_symbol_line(symbol)
 	return ret
 end
 
----@param p snoogle.SearchItem.Package
----@return snoogle.HighlightedText
+---@param p hoogle.SearchItem.Package
+---@return hoogle.HighlightedText
 function M.format_package_line(p)
-	---@type snoogle.HighlightedText
+	---@type hoogle.HighlightedText
 	local segments = {
 		{ text = "package ", default_hl = "@keyword" },
 		{ text = p.name, default_hl = "@namespace" },
@@ -25,10 +25,10 @@ function M.format_package_line(p)
 	return segments
 end
 
----@param m snoogle.SearchItem.Module
----@return snoogle.HighlightedText
+---@param m hoogle.SearchItem.Module
+---@return hoogle.HighlightedText
 function M.format_module_line(m)
-	--- @type snoogle.HighlightedText
+	--- @type hoogle.HighlightedText
 	local segments = {
 		{ text = "module ", default_hl = "@keyword" },
 		{ text = m.name, default_hl = "@namespace" },
@@ -38,8 +38,8 @@ function M.format_module_line(m)
 	return segments
 end
 
----@param data snoogle.SearchItem
----@return snoogle.HighlightedText
+---@param data hoogle.SearchItem
+---@return hoogle.HighlightedText
 function M.format_line(data)
 	if data.symbol ~= nil then
 		return M.format_symbol_line(data.symbol)

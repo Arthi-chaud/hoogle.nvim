@@ -3,16 +3,16 @@ local M = {}
 local pickers = require("telescope.pickers")
 local finders = require("telescope.finders")
 local previewers = require("telescope.previewers")
-local state = require("snoogle.state")
-local settings = require("snoogle.settings")
-local utils = require("snoogle.core.utils")
-local cmd = require("snoogle.core.cmd")
-local model = require("snoogle.core.model")
-local ui_line = require("snoogle.ui.line")
-local ui_preview = require("snoogle.ui.preview")
+local state = require("hoogle.state")
+local settings = require("hoogle.settings")
+local utils = require("hoogle.core.utils")
+local cmd = require("hoogle.core.cmd")
+local model = require("hoogle.core.model")
+local ui_line = require("hoogle.ui.line")
+local ui_preview = require("hoogle.ui.preview")
 local entry_display = require("telescope.pickers.entry_display")
 local action_state = require("telescope.actions.state")
-local actions = require("snoogle.actions")
+local actions = require("hoogle.actions")
 local telescope_actions = require("telescope.actions")
 
 local displayer = entry_display.create({
@@ -35,7 +35,7 @@ local function splitToLines(input, delimiter)
 	return result
 end
 
---- @param entry {value: snoogle.SearchItem}
+--- @param entry {value: hoogle.SearchItem}
 local function make_display(entry)
 	local text = ""
 	--- @type {[1]: {[1]: number, [2]: number}, [2]: string}[]
@@ -77,12 +77,12 @@ function M.picker(opts)
 						if action_name == "open_browser" then
 							local action = action_state.get_selected_entry()
 							local data = action.value
-							--- @cast data snoogle.SearchItem
+							--- @cast data hoogle.SearchItem
 							actions.open_browser(model.get_url(data))
 						elseif action_name == "copy_to_clipboard" then
 							local action = action_state.get_selected_entry()
 							local data = action.value
-							--- @cast data snoogle.SearchItem
+							--- @cast data hoogle.SearchItem
 							vim.notify("Copied to clipboard!", vim.log.levels.INFO)
 							telescope_actions.close(bufnr)
 							actions.copy_to_clipboard(model.get_name(data))
@@ -126,12 +126,12 @@ function M.picker(opts)
 			}),
 			previewer = previewers.new_buffer_previewer({
 				dynamic_title = function(_, entry)
-					--- @type snoogle.SearchItem
+					--- @type hoogle.SearchItem
 					local value = entry.value
 					return model.get_name(value)
 				end,
 				define_preview = function(self, entry)
-					--- @type snoogle.SearchItem
+					--- @type hoogle.SearchItem
 					local value = entry.value
 					local markdown = ui_preview.format_item_preview(value)
 					vim.api.nvim_buf_set_lines(self.state.bufnr, 0, -1, true, splitToLines(markdown, "\n"))

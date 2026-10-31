@@ -17,7 +17,7 @@ function M.is_in_stack_project(path)
 	path = path or 0
 	path = type(path) == "number" and vim.api.nvim_buf_get_name(path) or path --[[@as string]]
 	path = path == "" and (vim.uv or vim.loop).cwd() or path
-	path = svim.fs.normalize(path)
+	path = vim.fs.normalize(path)
 
 	if is_stack_root(path) then
 		return true

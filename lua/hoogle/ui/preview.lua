@@ -1,6 +1,6 @@
 local M = {}
 
----@param item snoogle.SearchItem
+---@param item hoogle.SearchItem
 ---@return string
 function M.format_item_preview(item)
 	local header = ""

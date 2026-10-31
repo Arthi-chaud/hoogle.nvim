@@ -1,18 +1,18 @@
 local M = {}
 
---- @class snoogle.State
---- @field config? snoogle.Config
+--- @class hoogle.State
+--- @field config? hoogle.Config
 
 --- @private
---- @type snoogle.State
+--- @type hoogle.State
 M._state = {}
 
---- @param c snoogle.Config
+--- @param c hoogle.Config
 function M.set_config(c)
 	M._state.config = c
 end
 
---- @return snoogle.Config
+--- @return hoogle.Config
 function M.get_config()
 	if M._state.config ~= nil then
 		return M._state.config

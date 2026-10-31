@@ -1,11 +1,11 @@
 local M = {}
 
----@class snoogle.CmdOpts
+---@class hoogle.CmdOpts
 ---@field use_stack? boolean
 ---@field count integer
 ---@field db_path? string
 
---- @param opts snoogle.CmdOpts
+--- @param opts hoogle.CmdOpts
 --- @param query string
 function M.get_cmd(opts, query)
 	local cmd = "hoogle"
@@ -34,7 +34,7 @@ function M.get_cmd(opts, query)
 end
 
 ---@param out string raw output
----@return snoogle.hoogle.SearchItem | nil
+---@return hoogle.hoogle.SearchItem | nil
 function M.parse_output_line(out)
 	if out == "No results found" then
 		return nil

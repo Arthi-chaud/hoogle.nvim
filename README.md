@@ -11,7 +11,7 @@ Neovim plugin that lets you search through a local Hoogle database.
 - Supports `stack hoogle`
 
 > [!NOTE]
-> This plugin expects the databse to already be generated and setup (i.e. `hoogle generate` or `stack hoogle --setup` has been run once before)
+> This plugin expects the database to be generated and setup (i.e. `hoogle generate` or `stack hoogle --setup` has been run once before)
 
 ## Demo
 
